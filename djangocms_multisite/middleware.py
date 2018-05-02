@@ -7,8 +7,13 @@ from django.core.urlresolvers import set_urlconf
 from django.utils.cache import patch_vary_headers
 from django.utils.six.moves import urllib_parse as urlparse
 
+try:
+    # Django > 1.10 uses MiddlewareMixin
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
 
-class CMSMultiSiteMiddleware(object):
+class CMSMultiSiteMiddleware(MiddlewareMixin):
     def process_request(self, request):
         MULTISITE_CMS_URLS = getattr(settings, 'MULTISITE_CMS_URLS', {})
         MULTISITE_CMS_ALIASES = getattr(settings, 'MULTISITE_CMS_ALIASES', {})
